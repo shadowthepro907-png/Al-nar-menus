@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ع النار - Menu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes pulse-gold { 0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.4); } 70% { box-shadow: 0 0 0 10px rgba(234, 179, 8, 0); } 100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); } }
+        .animate-item { animation: fadeIn 0.5s ease-out forwards; }
+        .order-btn-pulse { animation: pulse-gold 2s infinite; }
+        body { background-color: #0a0a0a; color: #e5e7eb; }
+    </style>
+</head>
+<body class="pb-56">
+
+<div class="max-w-md mx-auto p-4">
+    <h1 class="text-4xl font-black text-center text-red-600 mb-8 tracking-widest">ع النار</h1>
+
+    <div class="flex gap-2 mb-6">
+        <button onclick="setOrderType('Delivery')" id="btn-Delivery" class="type-btn flex-1 py-3 rounded-lg border border-red-600 bg-red-900 text-white font-bold transition-all">Delivery</button>
+        <button onclick="setOrderType('Takeaway')" id="btn-Takeaway" class="type-btn flex-1 py-3 rounded-lg border border-gray-700 bg-transparent text-gray-400 font-bold transition-all">Takeaway</button>
+    </div>
+
+    <div id="menu-container" class="space-y-8"></div>
+
+    <div class="mt-12 pt-8 border-t border-gray-800 text-center">
+        <div class="mb-8">
+            <h3 class="text-gray-500 font-bold mb-3">VISIT US</h3>
+            <div class="flex items-center justify-center gap-3 text-yellow-500">
+                <i class="fas fa-map-marker-alt text-2xl"></i>
+                <span class="font-bold">Kfarshima, Belouh, Yaghy Bld</span>
+            </div>
+        </div>
+
+        <h3 class="text-gray-500 font-bold mb-6">CONNECT WITH US</h3>
+        <div class="grid grid-cols-1 gap-4">
+            <a href="https://www.tiktok.com/@3alnar_lb" target="_blank" class="flex items-center justify-center gap-3 text-white hover:text-red-500 transition-colors">
+                <i class="fab fa-tiktok text-2xl"></i>
+                <span class="font-bold">@3alnar_lb</span>
+            </a>
+            <a href="https://www.instagram.com/3alnar_lb" target="_blank" class="flex items-center justify-center gap-3 text-white hover:text-pink-500 transition-colors">
+                <i class="fab fa-instagram text-2xl"></i>
+                <span class="font-bold">@3alnar_lb</span>
+            </a>
+            <a href="https://wa.me/96181737470" target="_blank" class="flex items-center justify-center gap-3 text-white hover:text-green-500 transition-colors">
+                <i class="fab fa-whatsapp text-2xl"></i>
+                <span class="font-bold">+961 81 737 470</span>
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="fixed bottom-0 left-0 w-full bg-black border-t border-red-900 p-4 shadow-[0_-10px_20px_rgba(0,0,0,0.5)] z-50">
+    <textarea id="orderComment" placeholder="Special instructions..." class="w-full p-3 text-sm bg-gray-900 border border-gray-700 rounded mb-2 h-16 text-white"></textarea>
+    <div class="flex justify-between items-center mb-3">
+        <span class="text-2xl font-bold text-yellow-500">$<span id="total">0.00</span></span>
+        <button onclick="sendWhatsApp()" class="bg-red-600 text-white px-8 py-3 rounded-full font-bold shadow-lg hover:bg-red-700 transition-all order-btn-pulse">Order Now</button>
+    </div>
+</div>
+
+<script>
+    const menuData = [
+        { cat: "Salad & Sides", items: [{n: "Fattouch", p: 5.50}, {n: "Hommos", p: 5.00}, {n: "Box Fries", p: 2.00}, {n: "Fries", p: 4.00}] },
+        { cat: "Sandwiches", items: [
+            {n: "Fries (Toum, Ketchup, Coleslaw, Pickels)", p: 3.00},
+            {n: "Tawook (Toum, Fries, Coleslaw, Pickels)", p: 6.00},
+            {n: "Lahme (Hommos, Grilled Tomato & onion, Biwaz)", p: 6.50},
+            {n: "Ghanam (Hommos, Grilled Tomato & onion, Biwaz)", p: 9.00},
+            {n: "Mkanek (Hommos, Debbes Remen, Pickels)", p: 6.00},
+            {n: "Kafta (Hommos, Grilled Tomato & onion, Biwaz)", p: 6.00},
+            {n: "Kabab (Hommos, Grilled Tomato & onion, Biwaz)", p: 6.00},
+            {n: "Kabab ع النار (Cheese & grilled Tomato)", p: 7.00},
+            {n: "Chicken Grilled (Toum, Pickels, Fries)", p: 6.00},
+            {n: "Kafta 3al Ab3a", p: 7.00},
+            {n: "Kabab 3al Ab3a", p: 7.00}
+        ]},
+        { cat: "Platters", items: [
+            {n: "Plat Tawook (2 Skewers, Fries, Toum, Coleslaw)", p: 9.00},
+            {n: "Plat Lahme (2 Skewers, Hommos, Biwaz, Grilled Tomato & onion)", p: 10.00},
+            {n: "Plat Ghanam (2 Skewers, Hommos, Biwaz, Grilled Tomato & onion)", p: 12.00},
+            {n: "Plat Kafta (4 Skewers, Hommos, Biwaz, Grilled Tomato & onion)", p: 9.00},
+            {n: "Plat Kabab (4 Skewers, Hommos, Biwaz, Grilled Tomato & onion)", p: 9.00},
+            {n: "Plat Kabab ع النار (4 Skewers, Grilled Tomato)", p: 10.00},
+            {n: "Plat Wings (14pcs)", p: 8.00},
+            {n: "1/2 Plat Wings (8pcs)", p: 5.00}
+        ]},
+        { cat: "النار Skewers 70cm dine-in", items: [
+            {n: "Skewer ع النار tawook (Fries, Coleslaw, Toum)", p: 25.00},
+            {n: "Skewer ع النار kbab (Grilled Tomato&onion, Biwaz, Hommos)", p: 25.00},
+            {n: "Skewer ع النار Kafta (Grilled Tomato&onion, Biwaz, Hommos)", p: 25.00},
+            {n: "Skewer ع النار Wings (Fries, Toum)", p: 25.00},
+            {n: "Skewer ع النار lahme (Grilled Tomato&onion, Biwaz, Hommos)", p: 30.00}
+        ]},
+        { cat: "Masheweh (1Kg)", items: [{n: "Mshakal 1Kg", p: 29.00}, {n: "Tawook 1Kg", p: 26.00}, {n: "Lahme 1Kg", p: 32.00}, {n: "Ghanam 1Kg", p: 38.00}, {n: "Kafta 1Kg", p: 26.00}, {n: "Kabab 1Kg", p: 26.00}] },
+        { cat: "Masheweh (0.5Kg)", items: [{n: "Mshakal 0.5Kg", p: 15.00}, {n: "Tawook 0.5Kg", p: 14.00}, {n: "Lahme 0.5Kg", p: 17.00}, {n: "Ghanam 0.5Kg", p: 20.00}, {n: "Kafta 0.5Kg", p: 14.00}, {n: "Kabab 0.5Kg", p: 14.00}] },
+        { cat: "Chicken", items: [{n: "Farouj (Whole)", p: 16.00}, {n: "Nos Farouj (Half)", p: 9.00}] },
+        { cat: "Extra Sauces", items: [{n: "Toum", p: 1.00}, {n: "Honey Mustard", p: 1.50}, {n: "Sauce ع النار", p: 1.50}] },
+        { cat: "Drinks", items: [{n: "Soft Drinks", p: 1.10}, {n: "Sparkling Water", p: 1.10}, {n: "Sparkling + Lemon", p: 1.50}, {n: "Water", p: 0.50}, {n: "Beer", p: 2.00}] }
+    ];
+
+    let order = {};
+    let itemPrices = {};
+    let orderType = "Delivery";
+
+    function renderMenu() {
+        const container = document.getElementById('menu-container');
+        menuData.forEach(section => {
+            const div = document.createElement('div');
+            div.className = "animate-item";
+            div.innerHTML = `<h2 class="text-xl font-bold text-red-500 border-b border-red-900 pb-2 mb-4">${section.cat}</h2>`;
+            section.items.forEach(item => {
+                const uniqueId = `${section.cat}-${item.n}`.replace(/\s+/g, '-');
+                order[uniqueId] = 0;
+                itemPrices[uniqueId] = item.p;
+                div.innerHTML += `
+                    <div class="flex justify-between items-center py-3 border-b border-gray-800">
+                        <span class="font-medium">${item.n} <span class="text-gray-500 text-xs">(${item.p}$)</span></span>
+                        <div class="flex items-center gap-3">
+                            <button onclick="updateQty('${uniqueId}')" class="bg-gray-800 text-white px-3 py-1 rounded hover:bg-gray-700">-</button>
+                            <span id="qty-${uniqueId}" class="w-8 text-center font-bold text-yellow-500">0</span>
+                            <button onclick="updateQty('${uniqueId}', 1)" class="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700">+</button>
+                        </div>
+                    </div>`;
+            });
+            container.appendChild(div);
+        });
+    }
+
+    function updateQty(id, change = -1) {
+        order[id] = Math.max(0, order[id] + change);
+        document.getElementById(`qty-${id}`).innerText = order[id];
+        calculateTotal();
+    }
+
+    function calculateTotal() {
+        let total = 0;
+        for (let id in order) total += order[id] * itemPrices[id];
+        document.getElementById('total').innerText = total.toFixed(2);
+    }
+
+    function setOrderType(type) {
+        orderType = type;
+        document.querySelectorAll('.type-btn').forEach(b => {
+            b.classList.remove('bg-red-900', 'border-red-600', 'text-white');
+            b.classList.add('bg-transparent', 'border-gray-700', 'text-gray-400');
+        });
+        document.getElementById(`btn-${type}`).classList.add('bg-red-900', 'border-red-600', 'text-white');
+    }
+
+    function sendWhatsApp() {
+        let msg = `*Order from ع النار*\nType: ${orderType}\n\n`;
+        for (let id in order) {
+            if (order[id] > 0) {
+                const name = id.split('-').slice(1).join(' ');
+                msg += `${name}: ${order[id]}\n`;
+            }
+        }
+        msg += `\n*Total: $${document.getElementById('total').innerText}*`;
+        msg += `\n\n*Note:* ${document.getElementById('orderComment').value}`;
+        window.open(`https://wa.me/96181737470?text=${encodeURIComponent(msg)}`, '_blank');
+    }
+
+    renderMenu();
+</script>
+</body>
+</html>
